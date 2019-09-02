@@ -1,0 +1,45 @@
+//Calling method
+Pages.ArguEnterprise.DeleteExistingDownloadedFile(".exe");
+
+//method to write in a page pattern.
+public ArgusEnterprise DeleteExistingDownloadedFile(string extension)
+        {
+            try
+            {
+                if (Browser.isVNextTest)
+                {
+                    downloadPath = @"C:\Users\testfarm\Downloads\";
+                    Utility.DeleteFileWithExtension(downloadPath, extension);
+                }
+                else
+                {
+                    downloadPath = @"C:\Users\" + Environment.UserName + @"\Downloads\";
+                    Utility.DeleteFileWithExtension(downloadPath, extension);
+                }
+            }
+            catch(Exception ex)
+            {
+
+            }
+            return this;
+        }
+        
+        //Method written in a common utility function with c# (Directory.GetFiles(string,string) method.
+        
+       public static void DeleteFilesWithExtension(string folderPath, string extension)
+        {
+            try
+            {
+                foreach (string file in Directory.GetFiles(folderPath, "*" + extension).Where(item => item.EndsWith(extension)))
+                {
+                    FileInfo fl = new FileInfo(file);
+                    fl.Attributes = FileAttributes.Normal;
+                    fl.Delete();
+                }
+                PageBase.WriteLog(Logger.LogLevel.Success, string.Format("Deleted files with extension {0} in folder {1}", extension, folderPath));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(string.Format("Failed to delete files with extension {0} in folder {1}", extension, folderPath));
+            }
+        } 
